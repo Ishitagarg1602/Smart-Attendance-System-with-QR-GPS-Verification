@@ -1,6 +1,10 @@
 # Smart Attendance System with QR & GPS Verification 
 
-**📺 [Watch the Live Demo Video Here](https://drive.google.com/file/d/1Bf0WL0WlRRqcm5ClA7LWM-P7wr03PCya/view?usp=drive_link)**
+### 📌 Quick Links for Reviewers:
+* **Live Deployed API Base URL:** `https://smart-attendance-system-with-qr-gps.onrender.com`
+* **Demo Video:** [Watch the Live Demo Here](https://drive.google.com/file/d/1Bf0WL0WlRRqcm5ClA7LWM-P7wr03PCya/view?usp=drive_link)
+* **Postman Collection:** [Download JSON](src/docs/postman_collection.json)
+* **Full API Documentation:** [Read Documentation](src/docs/documentation.md)
 
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express-v4.19-blue.svg)](https://expressjs.com/)
