@@ -1,0 +1,29 @@
+$kind: http-request
+name: Create QR Session
+url: "{{base_url}}/api/qr/create-session"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "sessionName": "DBMS Lecture 12",
+      "subject": "Database Management Systems",
+      "expiryMinutes": 5,
+      "locationZone": "6a3fabeeace009936206615e"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{jwt_token}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      const jsonData = pm.response.json();
+      if (jsonData.success && jsonData.data) {
+          pm.environment.set("qr_token", jsonData.data.qrData);
+          pm.environment.set("session_id", jsonData.data.session._id);
+      }
+    language: text/javascript
+order: 1000

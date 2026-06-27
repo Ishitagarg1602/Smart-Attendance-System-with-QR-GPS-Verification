@@ -3,7 +3,7 @@ import userRepository from '../repositories/user.repository.js';
 import AppError from '../utils/appError.js';
 import { HTTP_STATUS } from '../constants/index.js';
 
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     let token;
 
@@ -36,4 +36,11 @@ const protect = async (req, res, next) => {
   }
 };
 
-export default protect;
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', HTTP_STATUS.FORBIDDEN));
+    }
+    next();
+  };
+};

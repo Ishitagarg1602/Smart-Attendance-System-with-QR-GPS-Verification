@@ -1,69 +1,37 @@
 {
 	"info": {
 		"_postman_id": "7bf3b3a3-bcf2-49df-8b2b-0ff6960dcdb1",
-		"name": "Smart Attendance System - Phase 1",
-		"description": "Postman API Collection for testing Phase 1 of the Smart Attendance System.",
+		"name": "Smart Attendance System - Complete",
+		"description": "Full Postman API Collection for testing Phase 1 & Phase 2 of the Smart Attendance System.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Authentication",
+			"name": "1. Authentication",
 			"item": [
+				{
+					"name": "Register Admin User",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type","value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Super Admin\",\n  \"email\": \"admin@university.edu\",\n  \"password\": \"Password123\",\n  \"role\": \"Admin\",\n  \"department\": \"IT\",\n  \"employeeId\": \"ADMIN001\"\n}"
+						},
+						"url": {"raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api","auth","register"]}
+					}
+				},
 				{
 					"name": "Register Student",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type","value": "application/json"}],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"student.john@university.edu\",\n  \"password\": \"Password123\",\n  \"role\": \"Student\",\n  \"department\": \"Computer Science\",\n  \"course\": \"B.Tech CSE\",\n  \"semester\": 4,\n  \"studentId\": \"STUD123456\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register Teacher",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Professor Smith\",\n  \"email\": \"teacher.smith@university.edu\",\n  \"password\": \"Password123\",\n  \"role\": \"Teacher\",\n  \"department\": \"Computer Science\",\n  \"employeeId\": \"EMP987654\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api","auth","register"]}
+					}
 				},
 				{
 					"name": "Login User",
@@ -83,123 +51,61 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type","value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"email\": \"student.john@university.edu\",\n  \"password\": \"Password123\"\n}"
+							"raw": "{\n  \"email\": \"admin@university.edu\",\n  \"password\": \"Password123\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"]}
+					}
 				},
 				{
 					"name": "Get Profile",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/auth/profile",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Profile",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Johnathan Doe Updated\",\n  \"semester\": 5\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/auth/profile",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"profile"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Logout",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/auth/logout",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"logout"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/auth/profile", "host": ["{{base_url}}"], "path": ["api","auth","profile"]}
+					}
 				}
 			]
 		},
 		{
-			"name": "QR Code Sessions",
+			"name": "2. Location Zones (Phase 2)",
 			"item": [
 				{
-					"name": "Create Session (Teacher/Admin)",
+					"name": "Create Location Zone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data) {",
+									"    pm.environment.set(\"zone_id\", jsonData.data._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
+						"method": "POST",
+						"header": [{"key": "Content-Type","value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"zoneName\": \"Main Campus\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090,\n  \"radiusInMeters\": 50\n}"
+						},
+						"url": {"raw": "{{base_url}}/api/zones", "host": ["{{base_url}}"], "path": ["api","zones"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. QR Sessions",
+			"item": [
+				{
+					"name": "Create QR Session",
 					"event": [
 						{
 							"listen": "test",
@@ -216,338 +122,86 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type","value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"sessionName\": \"DBMS Lecture 12\",\n  \"subject\": \"Database Management Systems\",\n  \"expiryMinutes\": 5\n}"
+							"raw": "{\n  \"sessionName\": \"DBMS Lecture 12\",\n  \"subject\": \"Database Management Systems\",\n  \"expiryMinutes\": 5,\n  \"locationZone\": \"{{zone_id}}\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/qr/create-session",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"qr",
-								"create-session"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Session Details",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/qr/{{session_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"qr",
-								"{{session_id}}"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/qr/create-session", "host": ["{{base_url}}"], "path": ["api","qr","create-session"]}
+					}
 				},
 				{
 					"name": "Get Active Sessions",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/qr/active",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"qr",
-								"active"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/qr/active", "host": ["{{base_url}}"], "path": ["api","qr","active"]}
+					}
 				},
 				{
 					"name": "Terminate Session",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/qr/{{session_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"qr",
-								"{{session_id}}"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/qr/{{session_id}}", "host": ["{{base_url}}"], "path": ["api","qr","{{session_id}}"]}
+					}
 				}
 			]
 		},
 		{
-			"name": "Attendance Processing",
+			"name": "4. Attendance Processing",
 			"item": [
 				{
-					"name": "Mark QR Attendance (Student/Employee)",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();",
-									"if (jsonData.success && jsonData.data.record) {",
-									"    pm.environment.set(\"attendance_id\", jsonData.data.record._id);",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "Mark QR Attendance (With GPS)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
+						"header": [{"key": "Content-Type","value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"qrToken\": \"{{qr_token}}\"\n}"
+							"raw": "{\n  \"qrToken\": \"{{qr_token}}\",\n  \"latitude\": 28.6139,\n  \"longitude\": 77.2090\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/attendance/mark",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"mark"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/attendance/mark", "host": ["{{base_url}}"], "path": ["api","attendance","mark"]}
+					}
 				},
 				{
-					"name": "Get My Attendance History (Student)",
+					"name": "Get My Attendance History",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/attendance/history",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"history"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/attendance/history", "host": ["{{base_url}}"], "path": ["api","attendance","history"]}
+					}
 				},
 				{
-					"name": "Get Specific Attendance Record",
+					"name": "Get All Records (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/attendance/{{attendance_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"{{attendance_id}}"
-							]
-						}
-					},
-					"response": []
-				},
+						"url": {"raw": "{{base_url}}/api/attendance/all", "host": ["{{base_url}}"], "path": ["api","attendance","all"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Dashboard & Reports (Phase 2)",
+			"item": [
 				{
-					"name": "Get All Records (Admin/Teacher)",
+					"name": "Dashboard Stats",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/attendance/all",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"all"
-							]
-						}
-					},
-					"response": []
+						"url": {"raw": "{{base_url}}/api/dashboard/stats", "host": ["{{base_url}}"], "path": ["api","dashboard","stats"]}
+					}
 				},
 				{
-					"name": "Update Status (Admin/Teacher)",
+					"name": "Daily Report",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"attendanceStatus\": \"Late\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/attendance/{{attendance_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"{{attendance_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Record (Admin Only)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/attendance/{{attendance_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"attendance",
-								"{{attendance_id}}"
-							]
-						}
-					},
-					"response": []
+						"auth": {"type": "bearer", "bearer": [{"key": "token","value": "{{jwt_token}}","type": "string"}]},
+						"method": "GET",
+						"url": {"raw": "{{base_url}}/api/reports/daily", "host": ["{{base_url}}"], "path": ["api","reports","daily"]}
+					}
 				}
 			]
 		}

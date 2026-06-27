@@ -1,0 +1,12 @@
+name: Local Environment
+values:
+  - key: base_url
+    value: 'http://localhost:5000'
+  - key: jwt_token
+    value: ''
+  - key: zone_id
+    value: ''
+  - key: qr_token
+    value: ''
+  - key: session_id
+    value: ''

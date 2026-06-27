@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: c88af896-3814-4494-8e82-c955532cc300
+
+localResources:
+  collections:
+    - ../src/docs/postman_collection.json
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Smart Attendance System - Complete: 171b0c80-cb73-4926-936d-17c084bdca39

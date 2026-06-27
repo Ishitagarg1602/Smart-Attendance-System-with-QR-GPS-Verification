@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{base_url}}/api/zones"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "zoneName": "Main Campus",
+      "latitude": 28.6139,
+      "longitude": 77.2090,
+      "radiusInMeters": 50
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{jwt_token}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      const jsonData = pm.response.json();
+      if (jsonData.success && jsonData.data) {
+          pm.environment.set("zone_id", jsonData.data._id);
+      }
+    language: text/javascript
+order: 1000

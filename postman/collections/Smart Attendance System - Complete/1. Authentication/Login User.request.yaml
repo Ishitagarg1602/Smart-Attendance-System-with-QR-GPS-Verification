@@ -1,0 +1,22 @@
+$kind: http-request
+name: Login User
+url: "{{base_url}}/api/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "admin@university.edu",
+      "password": "Password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const jsonData = pm.response.json();
+      if (jsonData.success && jsonData.data.token) {
+          pm.environment.set("jwt_token", jsonData.data.token);
+      }
+    language: text/javascript
+order: 3000

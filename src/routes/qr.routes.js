@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import qrController from '../controllers/qr.controller.js';
-import protect from '../middlewares/auth.middleware.js';
+import { protect } from '../middlewares/auth.middleware.js';
 import restrictTo from '../middlewares/role.middleware.js';
 import validate from '../middlewares/validate.middleware.js';
 import { ROLES } from '../constants/index.js';

@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "John Doe",
+      "email": "student.john@university.edu",
+      "password": "Password123",
+      "role": "Student",
+      "department": "Computer Science",
+      "course": "B.Tech CSE",
+      "semester": 4,
+      "studentId": "STUD123456"
+    }
+order: 2000

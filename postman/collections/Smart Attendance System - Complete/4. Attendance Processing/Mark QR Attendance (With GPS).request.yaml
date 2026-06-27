@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/api/attendance/mark"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "qrToken": "{{qr_token}}",
+      "latitude": 28.6139,
+      "longitude": 77.2090
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{jwt_token}}"
+order: 1000

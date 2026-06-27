@@ -1,0 +1,4 @@
+$kind: collection
+description: Full Postman API Collection for testing Phase 1 & Phase 2 of the Smart Attendance System.
+variables:
+  base_url: http://localhost:5000
