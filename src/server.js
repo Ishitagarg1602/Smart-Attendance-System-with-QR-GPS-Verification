@@ -5,6 +5,8 @@ dotenv.config();
 import app from './app.js';
 import connectDB from './config/db.js';
 import logger from './config/logger.js';
+import http from 'http';
+import { initializeSocket } from './socket/socket.js';
 
 // Uncaught exceptions listener
 process.on('uncaughtException', (err) => {
@@ -18,7 +20,12 @@ connectDB();
 
 // Server execution
 const port = process.env.PORT || 5000;
-const server = app.listen(port, () => {
+const server = http.createServer(app);
+
+// Initialize WebSockets
+initializeSocket(server);
+
+server.listen(port, () => {
   logger.info(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${port}`);
 });
 

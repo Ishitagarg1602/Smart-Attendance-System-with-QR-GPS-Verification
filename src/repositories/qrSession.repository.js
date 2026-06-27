@@ -6,7 +6,9 @@ class QRSessionRepository {
   }
 
   async findById(id) {
-    return await QRSession.findById(id).populate('createdBy', 'fullName email role department');
+    return await QRSession.findById(id)
+      .populate('createdBy', 'fullName email role department')
+      .populate('locationZone');
   }
 
   async findActiveByToken(qrToken) {

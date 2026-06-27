@@ -17,9 +17,21 @@ const attendanceSchema = new mongoose.Schema(
       type: String,
       enum: {
         values: Object.values(ATTENDANCE_STATUS),
-        message: 'Invalid attendance status. Choose from: Present, Absent, Late, Excused'
+        message: 'Invalid attendance status. Choose from: Present, Absent, Late, Excused, Spoofed/Rejected'
       },
       default: ATTENDANCE_STATUS.PRESENT
+    },
+    latitude: {
+      type: Number,
+      required: true
+    },
+    longitude: {
+      type: Number,
+      required: true
+    },
+    distance: {
+      type: Number,
+      required: true // distance from center in meters
     },
     attendanceTime: {
       type: Date,

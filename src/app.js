@@ -8,6 +8,9 @@ import rateLimit from 'express-rate-limit';
 import authRouter from './routes/auth.routes.js';
 import qrRouter from './routes/qr.routes.js';
 import attendanceRouter from './routes/attendance.routes.js';
+import locationZoneRouter from './routes/locationZone.routes.js';
+import dashboardRouter from './routes/dashboard.routes.js';
+import reportRouter from './routes/report.routes.js';
 
 import globalErrorHandler from './middlewares/errorHandler.js';
 import AppError from './utils/appError.js';
@@ -63,6 +66,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/qr', qrRouter);
 app.use('/api/attendance', attendanceRouter);
+app.use('/api/zones', locationZoneRouter);
+app.use('/api/dashboard', dashboardRouter);
+app.use('/api/reports', reportRouter);
 
 // 8. 404 Route Catch Handler
 app.all('*', (req, res, next) => {

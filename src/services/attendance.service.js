@@ -3,9 +3,11 @@ import qrSessionRepository from '../repositories/qrSession.repository.js';
 import qrService from './qr.service.js';
 import AppError from '../utils/appError.js';
 import { HTTP_STATUS, ATTENDANCE_STATUS } from '../constants/index.js';
+import { isWithinRadius } from '../utils/haversine.js';
+import { emitToSession } from '../socket/socket.js';
 
 class AttendanceService {
-  async markStudentAttendance(signedQRData, userId) {
+  async markStudentAttendance(signedQRData, userId, latitude, longitude) {
     // 1. Verify and decode signed QR payload
     const decoded = qrService.validateQRTokenData(signedQRData);
     const { sessionId, qrToken, expiresAt } = decoded;
@@ -31,25 +33,64 @@ class AttendanceService {
       throw new AppError('QR Session has expired', HTTP_STATUS.BAD_REQUEST);
     }
 
-    // 4. Check for duplicate attendance scans
+    // 4. GPS Verification via Haversine Formula
+    if (!session.locationZone) {
+      throw new AppError('Location Zone not configured for this session', HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+    
+    const zone = session.locationZone;
+    const { isWithinRadius: validRadius, distance } = isWithinRadius(
+      latitude,
+      longitude,
+      zone.latitude,
+      zone.longitude,
+      zone.radius
+    );
+
+    // 5. Check for duplicate attendance scans
     const existingRecord = await attendanceRepository.findByUserAndSession(userId, sessionId);
     if (existingRecord) {
       throw new AppError('Attendance has already been marked for this session', HTTP_STATUS.CONFLICT);
     }
 
-    // 5. Determine attendance status (check if student marked right before closing window or late)
-    // For Phase 1, we mark as 'Present'.
+    // 6. Enforce radius validation & Create attendance record
     let attendanceStatus = ATTENDANCE_STATUS.PRESENT;
 
-    // 6. Create attendance record
+    if (!validRadius) {
+      attendanceStatus = ATTENDANCE_STATUS.SPOOFED_REJECTED;
+      await attendanceRepository.create({
+        userId,
+        qrSessionId: sessionId,
+        attendanceStatus,
+        attendanceTime: new Date(),
+        latitude,
+        longitude,
+        distance
+      });
+      throw new AppError(`Attendance Rejected: You are ${distance}m away. Must be within ${zone.radius}m of the Location Zone.`, HTTP_STATUS.BAD_REQUEST);
+    }
+
     const attendance = await attendanceRepository.create({
       userId,
       qrSessionId: sessionId,
       attendanceStatus,
-      attendanceTime: new Date()
+      attendanceTime: new Date(),
+      latitude,
+      longitude,
+      distance
     });
 
-    return await attendanceRepository.findById(attendance._id);
+    const fullRecord = await attendanceRepository.findById(attendance._id);
+
+    // Emit live event to dashboard / admin via Socket.io
+    emitToSession(sessionId, 'attendance-marked', {
+      user: fullRecord.userId,
+      time: fullRecord.attendanceTime,
+      status: fullRecord.attendanceStatus,
+      distance: fullRecord.distance
+    });
+
+    return fullRecord;
   }
 
   async getStudentHistory(userId) {

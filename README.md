@@ -3,6 +3,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express-v4.19-blue.svg)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green.svg)](https://www.mongodb.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-Realtime-blueviolet.svg)](https://socket.io/)
 [![Security](https://img.shields.io/badge/Security-Helmet%20%7C%20CORS%20%7C%20RateLimit-orange.svg)](#)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -17,20 +18,29 @@ sequenceDiagram
     actor Admin/Teacher
     actor Student
     participant Backend as Express Backend
+    participant GPS as Geofencing Engine
     participant DB as MongoDB
+    participant Socket as WebSockets (Socket.io)
     
-    Admin/Teacher->>Backend: POST /api/qr/create-session (subject, details, duration)
-    Backend->>DB: Save session (token, expiresAt, active)
-    Backend-->>Admin/Teacher: Return Session object & signed Base64 QR Image
+    Admin/Teacher->>Backend: POST /api/qr/create-session (subject, locationZone, expiresAt)
+    Backend->>DB: Save session & zone ref
+    Backend-->>Admin/Teacher: Return Signed QR Base64 Image
     
-    Note over Student, Backend: Student scans QR & grabs token via client application
+    Note over Student, Backend: Student scans QR & extracts payload
     
-    Student->>Backend: POST /api/attendance/mark (signed QR token)
-    Backend->>Backend: Decode & verify token integrity (JWT validation)
-    Backend->>Backend: Validate session expiry & status
-    Backend->>DB: Query for duplicate scan logs
-    Backend->>DB: Save Attendance log (status: Present)
-    Backend-->>Student: Return Success Response
+    Student->>Backend: POST /api/attendance/mark (QR token, Lat, Lng)
+    Backend->>Backend: Decode & Verify Token (JWT)
+    Backend->>GPS: Haversine(User Coordinates, Zone Coordinates)
+    GPS-->>Backend: distance (meters), isWithinRadius
+    
+    alt Distance > Radius
+        Backend->>DB: Save Attendance (Status: Spoofed/Rejected)
+        Backend-->>Student: 400 Bad Request (Outside allowable radius)
+    else Distance <= Radius
+        Backend->>DB: Save Attendance (Status: Present, Distance)
+        Backend->>Socket: Emit 'attendance-marked' event to Admin Dashboard
+        Backend-->>Student: 201 Created (Attendance Success)
+    end
 ```
 
 ---
@@ -38,7 +48,9 @@ sequenceDiagram
 ##  Technology Stack
 
 * **Core Backend Framework**: Node.js & Express.js
+* **Real-time Engine**: Socket.io
 * **Database & ODM**: MongoDB & Mongoose
+* **Geofencing**: Math-based Haversine Formula (GPS Verification)
 * **Security & Auth**: JWT (JSON Web Tokens) & `bcryptjs`
 * **QR Generation Engine**: `qrcode` base64 builder
 * **Input Sanitization & Validation**: `express-validator`
@@ -168,12 +180,20 @@ npm run test
 * `DELETE /api/qr/:id` - Deactivate/Terminate session (Creator/Admin only)
 
 ### Attendance APIs
-* `POST /api/attendance/mark` - Mark scanning presence (Student/Employee only, validates signed QR)
-* `GET /api/attendance/history` - Fetch student's own attendance history (Student/Employee only)
-* `GET /api/attendance/all` - List all marked logs (Teacher/Admin only, supports filter queries)
-* `GET /api/attendance/:id` - Get specific log details (Auth users, checks authorization bounds)
-* `PUT /api/attendance/:id` - Manual override status (Teacher/Admin only)
-* `DELETE /api/attendance/:id` - Delete log record (Admin only)
+* `POST /api/attendance/mark` - Mark scanning presence (Validates QR JWT + GPS Coordinates)
+* `GET /api/attendance/history` - Fetch student's own attendance history
+* `GET /api/attendance/all` - List all marked logs
+* `GET /api/attendance/:id` - Get specific log details
+* `PUT /api/attendance/:id` - Manual override status
+* `DELETE /api/attendance/:id` - Delete log record
+
+### Advanced APIs (Phase 2 Features)
+* **Zones**: `POST /api/zones` - Create Location Zones for GPS fences
+* **Zones**: `GET /api/zones` - List available active zones
+* **Dashboard**: `GET /api/dashboard/stats` - Analytics, Real-time counts, 30-day percentage
+* **Dashboard**: `GET /api/dashboard/trends` - Daily attendance graph logic
+* **Reports**: `GET /api/reports/daily` - Extract structured daily attendance list
+* **Reports**: `GET /api/reports/student/:studentId` - Comprehensive tracking report for an individual
 
 ---
 
@@ -182,11 +202,10 @@ Import the prebuilt [Postman Collection](src/docs/postman_collection.json) to qu
 
 ---
 
-##  Future Enhancements (Phase 2 & Beyond)
-1. **GPS Radius Verification**: Validate that latitude/longitude is inside geofenced zones.
-2. **Real-time Synchronization**: Push live scan events to the dashboard using Socket.io.
-3. **Face Recognition integration**: Secondary biometric confirmation.
-4. **Excel/PDF export engines**: Report builders for admin dashboards.
+##  Future Enhancements (Phase 3 & Beyond)
+1. **Face Recognition integration**: Secondary biometric confirmation.
+2. **Cloud/AWS Storage**: Offloading PDF/CSV exports directly to S3.
+3. **Machine Learning Predictor**: Analyzing absentee trends.
 
 ---
 

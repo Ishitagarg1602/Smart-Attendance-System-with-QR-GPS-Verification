@@ -9,7 +9,8 @@ export const ATTENDANCE_STATUS = {
   PRESENT: 'Present',
   ABSENT: 'Absent',
   LATE: 'Late',
-  EXCUSED: 'Excused'
+  EXCUSED: 'Excused',
+  SPOOFED_REJECTED: 'Spoofed/Rejected'
 };
 
 export const HTTP_STATUS = {

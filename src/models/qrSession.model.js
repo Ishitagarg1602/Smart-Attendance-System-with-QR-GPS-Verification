@@ -18,6 +18,11 @@ const qrSessionSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Session must have an associated creator (Teacher/Admin)']
     },
+    locationZone: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'LocationZone',
+      required: [true, 'Session must have an associated Location Zone for GPS verification']
+    },
     qrToken: {
       type: String,
       required: true,

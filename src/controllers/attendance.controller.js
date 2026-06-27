@@ -4,8 +4,13 @@ import { HTTP_STATUS } from '../constants/index.js';
 class AttendanceController {
   async markAttendance(req, res, next) {
     try {
-      const { qrToken } = req.body;
-      const record = await attendanceService.markStudentAttendance(qrToken, req.user._id);
+      const { qrToken, latitude, longitude } = req.body;
+      
+      if (!latitude || !longitude) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: 'GPS coordinates are required' });
+      }
+
+      const record = await attendanceService.markStudentAttendance(qrToken, req.user._id, latitude, longitude);
 
       return res.status(HTTP_STATUS.CREATED).json({
         success: true,

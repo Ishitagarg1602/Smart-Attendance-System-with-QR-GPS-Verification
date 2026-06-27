@@ -7,7 +7,7 @@ import { HTTP_STATUS } from '../constants/index.js';
 
 class QRService {
   async createSession(sessionData, creatorId) {
-    const { sessionName, subject, expiryMinutes = 5 } = sessionData;
+    const { sessionName, subject, expiryMinutes = 5, locationZone } = sessionData;
     
     // Generate unique session token to prevent replay attacks
     const qrToken = uuidv4();
@@ -21,6 +21,7 @@ class QRService {
       sessionName,
       subject,
       createdBy: creatorId,
+      locationZone,
       qrToken,
       expiresAt,
       isActive: true
