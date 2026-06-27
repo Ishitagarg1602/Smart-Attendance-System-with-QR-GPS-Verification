@@ -1,45 +1,57 @@
-# Demo Video Script: Phase 2 Internship Submission 🎥
-**Target Length:** 8–12 Minutes
-**Objective:** Present the Phase 2 implementation of the Smart Attendance System, highlighting GPS Geofencing, Real-Time Socket.io, and the Aggregation Dashboard.
+# 🎥 3-Minute Demo Video Script (Updated & Simplified)
+
+**Important Note before starting:** Make sure your Postman environment is set to **"Live Render Environment"** in the top right corner!
 
 ---
 
-### Segment 1: Introduction (1 Minute)
-* **Visual:** Display the GitHub repository and Architecture Diagram from `README.md`.
-* **Speaker:** "Hello, I am [Your Name]. Welcome to my final Phase 2 demo of the Smart Attendance System with QR and GPS Verification. In Phase 1, we built the core Auth and QR APIs. Today, I'll demonstrate the production-grade Geofencing, WebSocket real-time updates, and the Analytics dashboard."
+### Segment 1: Introduction (30 Seconds)
+* **What to do on screen:** Have your **GitHub repository** open on your screen.
+* **What to say:** "Hello, my name is Ishita Garg. For my backend internship project, I developed the Smart Attendance System with QR & GPS Verification. This system solves real-world attendance issues like proxy attendance and inaccurate tracking by combining temporary QR codes, physical geofencing, and Role-Based Access Control."
 
-### Segment 2: Creating a Location Zone & Session (2 Minutes)
-* **Visual:** Open Postman. Show the Environment variables being used.
-* **Action:**
-  1. Login as **Admin**.
-  2. Call `POST /api/zones` to create "Main Campus" with coordinates and a `50m` radius.
-  3. Call `POST /api/qr/create-session`. Pass the `locationZone` ID in the payload.
-* **Speaker:** "First, we establish a Geofence. The Admin defines the exact Latitude, Longitude, and allowable Radius in meters. Then, we link this Zone to our new Attendance Session. The system generates a cryptographic Base-64 QR image preventing tampering."
+### Segment 2: Authentication & Roles (30 Seconds)
+* **What to do on screen:** 
+  1. Open Postman. 
+  2. Open the **1. Authentication** folder on the left.
+  3. Click on **Register Admin User**, then click the blue **Send** button. 
+* **What to say:** "The API is fully deployed live on Render. First, let's look at Authentication. The backend uses secure JWT tokens and strict Role-Based Access Control. When an Admin or Teacher logs in, they are granted permission to create attendance sessions, whereas Students only have permission to scan and mark attendance."
 
-### Segment 3: GPS Geofencing - Failure & Success (3 Minutes)
-* **Visual:** Postman, calling the `mark attendance` API.
-* **Action (Failure):**
-  1. Grab the QR token from the previous step.
-  2. Call `POST /api/attendance/mark` as a **Student**.
-  3. Intentionally pass dummy coordinates that are far away.
-  4. **Result:** Show the `400 Bad Request` saying "Attendance Rejected: You are 5000m away".
-* **Action (Success):**
-  1. Update coordinates to match exactly or within the 50m radius of the Zone.
-  2. Call the API again.
-  3. **Result:** Show the `201 Created` success message.
-* **Speaker:** "Here is the core logic in action. The backend employs the mathematical Haversine formula to calculate the exact physical distance in meters. When outside the radius, attendance is blocked and logged as a spoofing attempt. When inside, it is approved."
+### Segment 3: Geofencing & QR Generation (30 Seconds)
+* **What to do on screen:** 
+  1. Open the **2. Location Zones** folder.
+  2. Click **Create Location Zone**, then click **Send**. *(This creates a 50-meter radius around our test coordinates).*
+  3. Open the **3. QR Sessions** folder.
+  4. Click **Create QR Session**, then click **Send**.
+  5. **Action:** *Copy* the long text string next to `"qrData"` in the response area at the bottom.
+* **What to say:** "Teachers can create physical Location Zones using GPS coordinates. When a class starts, the system generates a secure, time-sensitive QR Session linked to that specific GPS zone. The QR code contains an encrypted token that changes dynamically."
 
-### Segment 4: Real-Time WebSockets (Socket.io) (2 Minutes)
-* **Visual:** Code walkthrough of `src/socket/socket.js`.
-* **Speaker:** "Notice that when attendance is successfully marked, the backend doesn't just save to MongoDB. It actively fires a Socket.io broadcast to the specific session room. This allows the frontend dashboard to update the 'Present Student' counter live without requiring a page refresh."
+### Segment 4: Anti-Spoofing GPS Verification (1 Minute)
+* **What to do on screen (The Failure Test):** 
+  1. Open the **1. Authentication** folder.
+  2. Click **Register Student**, then click **Send**.
+  3. Click **Login User**. In the *Body* tab, change the email to `student.john@university.edu`, and click **Send**. *(You are now logged in as a student).*
+  4. Open the **4. Attendance Processing** folder.
+  5. Click **Mark QR Attendance (With GPS)**.
+  6. Click the *Body* tab and paste your copied `qrData` string into the `"qrToken"` field.
+  7. Change the `latitude` to `10.000` and `longitude` to `10.000` *(these are fake coordinates)*.
+  8. Click **Send**. Point your mouse at the `400 Bad Request` error.
+* **What to say:** "Now, I will try to mark attendance as a Student. If a student tries to spoof their location by sending fake GPS coordinates, the backend uses the mathematical Haversine formula to calculate the exact distance. As you can see, the attendance is rejected because the student is outside the 50-meter radius."
 
-### Segment 5: Advanced Analytics & Dashboard APIs (2 Minutes)
-* **Visual:** Call `GET /api/dashboard/stats` in Postman.
-* **Speaker:** "For the admin dashboard, I wrote advanced MongoDB Aggregation pipelines. Instead of fetching thousands of records into memory, the database directly groups, counts, and projects the data, returning instant metrics for Total Students, Today's attendance distribution, and the 30-day percentage trend."
+* **What to do on screen (The Success Test):**
+  1. Change the `latitude` back to `28.6139` and `longitude` back to `77.2090`.
+  2. Click **Send**. Point your mouse at the `201 Created` success message.
+* **What to say:** "When the student is physically present inside the geofenced classroom, the coordinates match, and the attendance is successfully marked and saved to MongoDB."
 
-### Segment 6: Reports & Deployment (1 Minute)
-* **Visual:** Call `GET /api/reports/daily` in Postman. Briefly show deployment configurations (e.g., Render/Railway).
-* **Speaker:** "Finally, the reporting module exports structured daily and student-specific records, which can easily be piped into CSV or PDF engines on the client side. The entire architecture is secure, scalable, and completely ready for production deployment."
+### Segment 5: WebSockets & Real-time (15 Seconds)
+* **What to do on screen:** Open **VS Code** and show the `src/socket/socket.js` file on your screen.
+* **What to say:** "Under the hood, whenever a student marks attendance successfully, the backend fires a live Socket.io event. This allows the teacher's frontend dashboard to update the 'Present Student' counter instantly without refreshing the page."
 
-### Segment 7: Conclusion (30 Seconds)
-* **Speaker:** "Thank you for reviewing my project. All code, Swagger docs, and architecture flows are documented in the GitHub repo."
+### Segment 6: Analytics Dashboard (15 Seconds)
+* **What to do on screen:** 
+  1. Go back to **Postman**.
+  2. Open the **5. Dashboard & Reports** folder.
+  3. Click **Dashboard Stats**, then click **Send**.
+* **What to say:** "For the admin dashboard, I wrote advanced MongoDB Aggregation pipelines. Instead of fetching thousands of records into memory, the database directly calculates total students, today's attendance distribution, and the 30-day percentage trend in real-time."
+
+### Segment 7: Conclusion (10 Seconds)
+* **What to do on screen:** Open your live **Render Dashboard** or **GitHub Repo** again.
+* **What to say:** "The entire architecture is secure, scalable, and completely ready for production deployment. Thank you for reviewing my project!"
