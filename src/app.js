@@ -62,6 +62,13 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.status(HTTP_STATUS.OK).json({
+    success: true,
+    message: 'Welcome to the Smart Attendance System API! Please use Postman to interact with the /api endpoints.'
+  });
+});
+
 // 7. Mount Module Routes
 app.use('/api/auth', authRouter);
 app.use('/api/qr', qrRouter);
