@@ -34,7 +34,7 @@
 * **Speaker:** "Notice that when attendance is successfully marked, the backend doesn't just save to MongoDB. It actively fires a Socket.io broadcast to the specific session room. This allows the frontend dashboard to update the 'Present Student' counter live without requiring a page refresh."
 
 ### Segment 5: Advanced Analytics & Dashboard APIs (2 Minutes)
-* **Visual:** Call `GET /api/dashboard/stats` and `GET /api/dashboard/trends` in Postman.
+* **Visual:** Call `GET /api/dashboard/stats` in Postman.
 * **Speaker:** "For the admin dashboard, I wrote advanced MongoDB Aggregation pipelines. Instead of fetching thousands of records into memory, the database directly groups, counts, and projects the data, returning instant metrics for Total Students, Today's attendance distribution, and the 30-day percentage trend."
 
 ### Segment 6: Reports & Deployment (1 Minute)
